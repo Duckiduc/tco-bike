@@ -15,6 +15,7 @@ import {
   ToolOutlined,
   DatabaseOutlined,
   CaretRightOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -323,6 +324,354 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
                   concessionnaires et garages agréés
                   <br />
                   <strong>• Dépréciation :</strong> Études Eurotax et Argus Moto
+                </div>
+              }
+            />
+          </Space>
+        </div>
+      ),
+    },
+    {
+      key: "4",
+      label: (
+        <span>
+          <LinkOutlined />
+          Sources & Références
+        </span>
+      ),
+      children: (
+        <div>
+          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            <div>
+              <Title
+                level={4}
+                style={{ marginBottom: "1rem", fontWeight: 600 }}
+              >
+                Sources utilisées pour la compilation des données
+              </Title>
+              <Text
+                style={{
+                  lineHeight: 1.7,
+                  marginBottom: "2rem",
+                  display: "block",
+                }}
+              >
+                Ce projet open source compile des données provenant de multiples
+                sources publiques pour estimer les coûts de possession d'une
+                moto en France. Voici l'ensemble des références consultées :
+              </Text>
+            </div>
+
+            <Collapse
+              expandIcon={({ isActive }) => (
+                <CaretRightOutlined rotate={isActive ? 90 : 0} />
+              )}
+              ghost
+            >
+              <Panel header="💰 Coûts & Budget (Sources 1-25)" key="costs">
+                <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
+                  <a
+                    href="https://www.reddit.com/r/motorcycles/comments/111063t/the_surprisingly_low_cost_of_buying_owning_and/?tl=fr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [1] Reddit - Cost of buying & owning motorcycles
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.permisapoints.fr/moto/combien-coute-moto-lorsque-debute"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [2] Permis à Points - Coût d'une moto pour débuter
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.courtage-expertise-auto.fr/comment-importer-une-moto-en-france/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [3] Courtage Expertise Auto - Importer une moto en France
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.lelynx.fr/breves/assurance-moto-prix/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [4] Le Lynx - Prix assurance moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.conseils-vehicules.fr/budget-entretien-moto/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [5] Conseils Véhicules - Budget entretien moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.assurance-prevention.fr/achat-moto.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [6] Assurance Prévention - Achat moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.lerepairedesmotards.com/assurance/cout-prix-assurance-moto.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [7] Le Repaire des Motards - Coût assurance moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://moto-securite.fr/entretien-bmw/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [8] Moto Sécurité - Entretien BMW
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.r-pur.com/a/blog/news/consommation-carburant-moto-facteurs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [9] R-Pur - Consommation carburant moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://moto-station.com/moto-revue/actu/maxitest-consommations-moto-quelle-moto-consomme-le-moins/22424"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [10] Moto Station - Test consommations moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.jm-auto.fr/consommation-moto-combien-de-carburant-utilise-une-moto/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [11] JM Auto - Consommation carburant moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.cartegrise.com/france/prix-carte-grise/moto"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [12] Carte Grise - Prix carte grise moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.boursorama.com/patrimoine/actualites/controle-technique-moto-les-tarifs-sont-pour-l-instant-plus-eleves-que-50-euros-9447ef254472ef3a431a43145b3d6ea4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [13] Boursorama - Tarifs contrôle technique moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.carte-grise.org/calcul_cout_carte_grise.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [14] Carte Grise - Calcul coût carte grise
+                  </a>
+                  <br />
+                  <a
+                    href="https://autobilan-stlaurent.com/prix-du-controle-technique-des-deux-roues/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [15] Autobilan - Prix contrôle technique 2 roues
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.challenges.fr/economie/quel-budget-annuel-prevoir-pour-une-moto_776460"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [24] Challenges - Budget annuel moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.corsin-autos.fr/actualites-auto/comprendre-le-cout-total-de-possession-tco-notre-guide-complet/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [25] Corsin Autos - Guide TCO complet
+                  </a>
+                  <br />
+                </div>
+              </Panel>
+
+              <Panel
+                header="🏍️ Données Marché & Modèles (Sources 26-60)"
+                key="market"
+              >
+                <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
+                  <a
+                    href="https://www.moto-net.com/article/marche-moto-2024-les-meilleures-ventes-de-motos-et-scooters.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [26] Moto Net - Marché moto 2024 ventes
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.moto-net.com/article/marche-moto-2024-le-classement-des-constructeurs-en-france.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [27] Moto Net - Classement constructeurs 2024
+                  </a>
+                  <br />
+                  <a
+                    href="https://a2riders.com/actu/moto-a2-classement-2024/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [28] A2 Riders - Classement moto A2 2024
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.speedway.fr/pages/10-blog/31-actualites/14-moto/996-meilleure-marque-moto-2024.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [29] Speedway - Meilleure marque moto 2024
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.lelynx.fr/breves/5-motos-plus-vendues-2023/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [30] Le Lynx - 5 motos plus vendues 2023
+                  </a>
+                  <br />
+                  <a
+                    href="https://moto.honda.fr/motorcycles/range/street/hornet/specifications-and-price.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [31] Honda France - CB750 Hornet prix
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.planet-racing.fr/motos-hypernaked/296127-yamaha-mt-07-3000326784766.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [32] Planet Racing - Yamaha MT-07
+                  </a>
+                  <br />
+                  <a
+                    href="https://moto-station.com/guide-achat/ducati-panigale-v2-2020-a-2025-8252"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [33] Moto Station - Ducati Panigale V2
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.caradisiac.com/motos-et-scooters-quelles-marques-coutent-le-plus-cher-a-reparer-201929.htm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [34] Caradisiac - Marques les plus chères à réparer
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.motomag.com/Quelles-sont-les-marques-motos-et-scooters-les-plus-cheres-a-reparer-Le-bilan-SRA-2022.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [35] Motomag - Bilan SRA 2022 réparations
+                  </a>
+                  <br />
+                </div>
+              </Panel>
+
+              <Panel header="🔧 Entretien & Réparations" key="maintenance">
+                <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
+                  <a
+                    href="https://www.feuvert.fr/entretien-moto-et-scooter/revision-moto-pourquoi-quand-et-a-quel-prix/c40476.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [48] Feu Vert - Révision moto prix
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.yamaha-motor.eu/fr/fr/service-support/maintenance-repair/forfaits-d-entretien/forfaits-d-entretien-motos/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [49] Yamaha - Forfaits d'entretien
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.motojp.fr/tarif-horaire-mecanique-moto-2023-2024/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [43] MotoJP - Tarifs horaires mécanique
+                  </a>
+                  <br />
+                  <a
+                    href="https://www.boutique-biker.com/blogs/blog-moto/quelle-est-la-duree-de-vie-dun-pneu-moto"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [32] Boutique Biker - Durée de vie pneu moto
+                  </a>
+                  <br />
+                  <a
+                    href="https://muchpneu.fr/blog/duree-de-vie-dun-pneu-moto/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [34] MuchPneu - Durée de vie pneu moto
+                  </a>
+                  <br />
+                </div>
+              </Panel>
+
+              <Panel header="📊 Méthodologie & Analyses" key="methodology">
+                <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
+                  <a
+                    href="https://www.geotab.com/fr/blog/cout-total-de-possession/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    [28] Geotab - Coût total de possession
+                  </a>
+                  <br />
+                  <Text style={{ fontStyle: "italic", color: "#666" }}>
+                    + Données CSIAM, Ministère de la Transition Écologique,
+                    études Eurotax/Argus Moto
+                  </Text>
+                </div>
+              </Panel>
+            </Collapse>
+
+            <Alert
+              type="warning"
+              icon={<InfoCircleOutlined />}
+              message="Note importante sur les sources"
+              description={
+                <div style={{ lineHeight: 1.6 }}>
+                  <strong>Données approximatives :</strong> Les informations
+                  proviennent de sources publiques variées compilées durant mon
+                  temps libre. Les prix et coûts peuvent varier selon les
+                  régions, époques et conditions spécifiques. Ce projet vise à
+                  donner une estimation générale et ne remplace pas une analyse
+                  professionnelle personnalisée.
                 </div>
               }
             />
