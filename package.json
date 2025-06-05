@@ -10,17 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.1.8",
-    "@mui/material": "^6.1.8",
-    "@mui/system": "^6.1.8",
-    "@mui/x-charts": "^7.22.2",
-    "chart.js": "^4.4.9",
+    "@ant-design/icons": "^6.0.0",
+    "antd": "^5.25.4",
     "react": "^19.1.0",
-    "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.1.0",
-    "styled-components": "^6.1.18"
+    "recharts": "^2.15.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
