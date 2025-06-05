@@ -132,6 +132,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       label: (
         <span>
           <RiseOutlined />
+          <span style={{ marginLeft: "0.5rem" }} />
           Motos Populaires
         </span>
       ),
@@ -167,6 +168,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       label: (
         <span>
           <ToolOutlined />
+          <span style={{ marginLeft: "0.5rem" }} />
           Coûts par Marque
         </span>
       ),
@@ -227,6 +229,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       label: (
         <span>
           <DatabaseOutlined />
+          <span style={{ marginLeft: "0.5rem" }} />
           Méthodologie
         </span>
       ),
@@ -336,6 +339,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       label: (
         <span>
           <LinkOutlined />
+          <span style={{ marginLeft: "0.5rem" }} />
           Sources & Références
         </span>
       ),
