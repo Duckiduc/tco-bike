@@ -9,6 +9,7 @@ export interface TcoData {
   tireCost: number;
   tireLifespan: number;
   parkingCost: number;
+  includeDepreciation: boolean;
   totalCost: number;
   breakdown: {
     depreciation: number;
@@ -79,4 +80,5 @@ export interface TcoFormData {
   tireCost: number;
   tireLifespan: number;
   parkingCost: number;
+  includeDepreciation: boolean;
 }

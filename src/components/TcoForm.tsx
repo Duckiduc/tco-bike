@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Card, Typography, Input, Button, Space, Tag, Row, Col } from "antd";
+import {
+  Card,
+  Typography,
+  Input,
+  Button,
+  Space,
+  Tag,
+  Row,
+  Col,
+  Checkbox,
+} from "antd";
 import { CalculatorOutlined, CarOutlined } from "@ant-design/icons";
 import type { TcoData, TcoFormData } from "../types";
 
@@ -21,6 +31,7 @@ const defaultValues: Record<string, TcoFormData> = {
     tireCost: 150,
     tireLifespan: 15000,
     parkingCost: 50,
+    includeDepreciation: true,
   },
   medium: {
     category: "medium",
@@ -33,6 +44,7 @@ const defaultValues: Record<string, TcoFormData> = {
     tireCost: 250,
     tireLifespan: 12000,
     parkingCost: 50,
+    includeDepreciation: true,
   },
   large: {
     category: "large",
@@ -45,6 +57,7 @@ const defaultValues: Record<string, TcoFormData> = {
     tireCost: 400,
     tireLifespan: 10000,
     parkingCost: 50,
+    includeDepreciation: true,
   },
 };
 
@@ -61,8 +74,19 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
       }));
     };
 
+  const handleCheckboxChange =
+    (field: keyof TcoFormData) => (checked: boolean) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: checked,
+      }));
+    };
+
   const handleCategoryChange = (category: "small" | "medium" | "large") => {
-    setFormData(defaultValues[category]);
+    setFormData({
+      ...defaultValues[category],
+      includeDepreciation: formData.includeDepreciation,
+    });
   };
 
   const calculateTco = () => {
@@ -76,10 +100,11 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
       tireCost,
       tireLifespan,
       parkingCost,
+      includeDepreciation,
     } = formData;
 
     // Calculations
-    const depreciation = purchasePrice * 0.15; // 15% per year
+    const depreciation = includeDepreciation ? purchasePrice * 0.15 : 0; // 15% per year if included
     const fuelAnnualCost = (fuelConsumption * fuelPrice * annualKm) / 100;
     const tireAnnualCost = (tireCost * annualKm) / tireLifespan;
     const technicalCost = 70 / 2; // Technical inspection every 2 years
@@ -326,6 +351,21 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
               </Space>
             </Col>
           </Row>
+
+          <Checkbox
+            checked={formData.includeDepreciation}
+            onChange={(e) =>
+              handleCheckboxChange("includeDepreciation")(e.target.checked)
+            }
+            style={{
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "#666666",
+              marginBottom: "16px",
+            }}
+          >
+            Inclure la dépréciation (15% par an)
+          </Checkbox>
 
           <Space direction="vertical" size="small" style={{ width: "100%" }}>
             <Text>Coût stationnement mensuel</Text>

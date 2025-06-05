@@ -44,10 +44,18 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
     );
   }
 
-  const { totalCost, breakdown, category } = data;
+  const { totalCost, breakdown, category, includeDepreciation } = data;
 
   const pieData = [
-    { name: "Dépréciation", value: breakdown.depreciation, fill: "#8884d8" },
+    ...(includeDepreciation && breakdown.depreciation > 0
+      ? [
+          {
+            name: "Dépréciation",
+            value: breakdown.depreciation,
+            fill: "#8884d8",
+          },
+        ]
+      : []),
     { name: "Assurance", value: breakdown.insurance, fill: "#82ca9d" },
     { name: "Entretien", value: breakdown.maintenance, fill: "#ffc658" },
     { name: "Carburant", value: breakdown.fuel, fill: "#ff7300" },
@@ -75,11 +83,15 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
 
   const comparisonChartData = comparisonAverage
     ? [
-        {
-          category: "Dépréciation",
-          yours: breakdown.depreciation,
-          average: comparisonAverage.Dépréciation,
-        },
+        ...(includeDepreciation && breakdown.depreciation > 0
+          ? [
+              {
+                category: "Dépréciation",
+                yours: breakdown.depreciation,
+                average: comparisonAverage.Dépréciation,
+              },
+            ]
+          : []),
         {
           category: "Assurance",
           yours: breakdown.insurance,
@@ -158,26 +170,43 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
         <div style={{ marginBottom: "2rem" }}>
           <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
             Répartition des coûts
-          </Title>
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            {Object.entries(breakdown).map(([key, value]) => (
-              <div
-                key={key}
+            {!includeDepreciation && (
+              <Text
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "1rem",
-                  backgroundColor: "#f5f5f5",
-                  borderRadius: "8px",
+                  fontSize: "14px",
+                  color: "#666",
+                  fontWeight: 400,
+                  marginLeft: "8px",
                 }}
               >
-                <Text style={{ fontWeight: 500 }}>{costLabels[key]}</Text>
-                <Tag color="blue" style={{ fontWeight: 600 }}>
-                  {Math.round(value).toLocaleString()} €
-                </Tag>
-              </div>
-            ))}
+                (dépréciation exclue)
+              </Text>
+            )}
+          </Title>
+          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+            {Object.entries(breakdown)
+              .filter(
+                ([key, value]) =>
+                  key !== "depreciation" || (includeDepreciation && value > 0)
+              )
+              .map(([key, value]) => (
+                <div
+                  key={key}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "1rem",
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <Text style={{ fontWeight: 500 }}>{costLabels[key]}</Text>
+                  <Tag color="blue" style={{ fontWeight: 600 }}>
+                    {Math.round(value).toLocaleString()} €
+                  </Tag>
+                </div>
+              ))}
           </Space>
         </div>
 
