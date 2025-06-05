@@ -196,6 +196,51 @@ const TcoCalculator: React.FC = () => {
 
       {/* Data Explanation */}
       <DataExplanation bikeData={bikeData} brandData={brandData} />
+
+      {/* Disclaimer */}
+      <Card
+        style={{
+          marginTop: "4rem",
+          background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+          border: "1px solid #dee2e6",
+        }}
+      >
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Title
+            level={4}
+            style={{
+              margin: 0,
+              fontWeight: 600,
+              color: "#6c757d",
+              textAlign: "center",
+            }}
+          >
+            ⚠️ Avertissement
+          </Title>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#6c757d",
+              lineHeight: 1.6,
+              fontSize: "0.95rem",
+            }}
+          >
+            <strong>Projet Open Source :</strong> Ce calculateur TCO est un
+            projet open source développé pendant mon temps libre. Les données
+            proviennent de diverses sources publiques que j'ai croisées et
+            consolidées. Les résultats peuvent être imprécis et ne doivent être
+            utilisés qu'à titre indicatif. Pour des décisions d'achat
+            importantes, consultez toujours des professionnels et vérifiez les
+            données auprès de sources officielles.
+          </Text>
+          <div style={{ textAlign: "center" }}>
+            <Text style={{ fontSize: "0.85rem", color: "#9ca3af" }}>
+              Données compilées en 2024 • Sources multiples • Calculs
+              approximatifs
+            </Text>
+          </div>
+        </Space>
+      </Card>
     </div>
   );
 };
