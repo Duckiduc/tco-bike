@@ -69,11 +69,13 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       title: "Marque",
       dataIndex: "Marque",
       key: "brand",
+      className: "mobile-hide",
     },
     {
       title: "Cylindrée",
       dataIndex: "Cylindrée (cm³)",
       key: "displacement",
+      className: "mobile-hide",
     },
     {
       title: "Prix moyen",
@@ -108,6 +110,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       title: "Fiabilité",
       dataIndex: "Fiabilité_Note_10",
       key: "reliability",
+      className: "mobile-hide",
       render: (score: number) => (
         <Tag color={score >= 8 ? "green" : score >= 6 ? "orange" : "red"}>
           {score}/10
@@ -118,6 +121,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
       title: "Disponibilité pièces",
       dataIndex: "Disponibilité_Pièces_Note_10",
       key: "parts",
+      className: "mobile-hide",
       render: (score: number) => (
         <Tag color={score >= 8 ? "green" : score >= 6 ? "orange" : "red"}>
           {score}/10
@@ -186,14 +190,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
                 Incluant assurance, entretien, carburant et dépréciation
               </Text>
             </div>
-            <div
-              style={{
-                height: "400px",
-                backgroundColor: "#f5f5f5",
-                borderRadius: "8px",
-                padding: "1rem",
-              }}
-            >
+            <div className="data-brand-chart">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={brandChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -686,7 +683,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
   ];
 
   return (
-    <div style={{ marginTop: "4rem" }}>
+    <div className="data-explanation-container" style={{ marginTop: "4rem" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
         <Title
           level={1}

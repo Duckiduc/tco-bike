@@ -46,6 +46,28 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
 
   const { totalCost, breakdown, category, includeDepreciation } = data;
 
+  // Responsive label function for pie chart
+  const getResponsiveLabel = ({
+    name,
+    percent,
+  }: {
+    name: string;
+    percent: number;
+  }) => {
+    const isMobile = window.innerWidth <= 768;
+    const shortNames: Record<string, string> = {
+      Dépréciation: "Dépr.",
+      Assurance: "Ass.",
+      Entretien: "Entr.",
+      Carburant: "Carb.",
+      "Contrôle technique": "CT",
+      Stationnement: "Park.",
+    };
+
+    const displayName = isMobile && shortNames[name] ? shortNames[name] : name;
+    return `${displayName} ${(percent * 100).toFixed(0)}%`;
+  };
+
   const pieData = [
     ...(includeDepreciation && breakdown.depreciation > 0
       ? [
@@ -138,7 +160,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
 
   return (
     <Card>
-      <div style={{ padding: "2rem" }}>
+      <div className="tco-results-container">
         <Space align="center" style={{ marginBottom: "1.5rem" }}>
           <FundOutlined style={{ color: "#2196f3", fontSize: "1.75rem" }} />
           <Title level={2} style={{ fontWeight: 600, margin: 0 }}>
@@ -147,14 +169,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
         </Space>
 
         {/* Total Cost Card */}
-        <Card
-          style={{
-            marginBottom: "2rem",
-            background: "linear-gradient(135deg, #2196f3 0%, #1976d2 100%)",
-            color: "white",
-            textAlign: "center",
-          }}
-        >
+        <Card className="tco-total-card">
           <Title
             level={1}
             style={{ fontWeight: 700, marginBottom: "0.5rem", color: "white" }}
@@ -190,17 +205,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
                   key !== "depreciation" || (includeDepreciation && value > 0)
               )
               .map(([key, value]) => (
-                <div
-                  key={key}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "1rem",
-                    backgroundColor: "#f5f5f5",
-                    borderRadius: "8px",
-                  }}
-                >
+                <div key={key} className="tco-breakdown-item">
                   <Text style={{ fontWeight: 500 }}>{costLabels[key]}</Text>
                   <Tag color="blue" style={{ fontWeight: 600 }}>
                     {Math.round(value).toLocaleString()} €
@@ -215,14 +220,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
           <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
             Répartition visuelle
           </Title>
-          <div
-            style={{
-              height: "350px",
-              backgroundColor: "#f5f5f5",
-              borderRadius: "8px",
-              padding: "1rem",
-            }}
-          >
+          <div className="tco-chart-container">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -230,9 +228,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
+                  label={getResponsiveLabel}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -257,14 +253,7 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
             <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
               Comparaison avec la moyenne française
             </Title>
-            <div
-              style={{
-                height: "350px",
-                backgroundColor: "#f5f5f5",
-                borderRadius: "8px",
-                padding: "1rem",
-              }}
-            >
+            <div className="tco-chart-container">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={comparisonChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
