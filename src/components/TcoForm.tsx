@@ -148,11 +148,21 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
       <Space
         direction="vertical"
         size="large"
-        style={{ width: "100%", padding: 32 }}
+        style={{
+          width: "100%",
+          padding: window.innerWidth < 768 ? "16px" : "32px",
+        }}
       >
-        <Space align="center">
+        <Space align="center" style={{ flexWrap: "wrap" }}>
           <CarOutlined style={{ color: "#2196f3", fontSize: 28 }} />
-          <Title level={3} style={{ margin: 0, fontWeight: 600 }}>
+          <Title
+            level={3}
+            style={{
+              margin: 0,
+              fontWeight: 600,
+              fontSize: window.innerWidth < 480 ? "1.2rem" : "1.5rem",
+            }}
+          >
             Paramètres de votre moto
           </Title>
         </Space>
@@ -163,48 +173,57 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
             <Text style={{ fontWeight: 500, color: "#666666" }}>
               Catégorie de moto
             </Text>
-            <Space wrap>
+            <Space wrap style={{ width: "100%" }}>
               <Tag.CheckableTag
                 checked={formData.category === "small"}
                 onChange={() => handleCategoryChange("small")}
                 style={{
-                  padding: "6px 12px",
+                  padding: "8px 12px",
                   fontSize: "14px",
                   cursor: "pointer",
                   borderRadius: 6,
+                  minWidth: "fit-content",
+                  textAlign: "center",
+                  display: "inline-block",
                 }}
               >
-                Petite cylindrée (≤125cc)
+                Petite (≤125cc)
               </Tag.CheckableTag>
               <Tag.CheckableTag
                 checked={formData.category === "medium"}
                 onChange={() => handleCategoryChange("medium")}
                 style={{
-                  padding: "6px 12px",
+                  padding: "8px 12px",
                   fontSize: "14px",
                   cursor: "pointer",
                   borderRadius: 6,
+                  minWidth: "fit-content",
+                  textAlign: "center",
+                  display: "inline-block",
                 }}
               >
-                Moyenne cylindrée (126-599cc)
+                Moyenne (126-599cc)
               </Tag.CheckableTag>
               <Tag.CheckableTag
                 checked={formData.category === "large"}
                 onChange={() => handleCategoryChange("large")}
                 style={{
-                  padding: "6px 12px",
+                  padding: "8px 12px",
                   fontSize: "14px",
                   cursor: "pointer",
                   borderRadius: 6,
+                  minWidth: "fit-content",
+                  textAlign: "center",
+                  display: "inline-block",
                 }}
               >
-                Grosse cylindrée (≥600cc)
+                Grosse (≥600cc)
               </Tag.CheckableTag>
             </Space>
           </Space>
 
           {/* Form Fields */}
-          <Row gutter={[24, 24]}>
+          <Row gutter={[16, 16]}>
             <Col xs={24} sm={12}>
               <Space
                 direction="vertical"

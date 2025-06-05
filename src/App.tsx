@@ -35,24 +35,30 @@ function App() {
       }}
     >
       <Layout style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
-        <Content style={{ padding: "16px 8px" }}>
+        <Content style={{ padding: "8px 4px" }}>
           <div
-            style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 16px" }}
+            style={{
+              maxWidth: "1200px",
+              margin: "0 auto",
+              padding: "0 8px",
+              width: "100%",
+            }}
           >
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+            <div style={{ textAlign: "center", marginBottom: "24px" }}>
               <Title
                 level={1}
                 style={{
-                  marginBottom: 16,
+                  marginBottom: 8,
                   background:
                     "linear-gradient(135deg, #1a1a1a 0%, #2196f3 100%)",
                   backgroundClip: "text",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   display: "inline-block",
-                  fontSize: "2.5rem",
+                  fontSize: "clamp(1.8rem, 5vw, 2.5rem)",
                   fontWeight: 700,
                   letterSpacing: "-0.025em",
+                  lineHeight: 1.2,
                 }}
               >
                 🏍️ Calculateur TCO Moto
@@ -64,7 +70,9 @@ function App() {
                   fontWeight: 400,
                   maxWidth: "600px",
                   margin: "0 auto",
-                  fontSize: "1.5rem",
+                  fontSize: "clamp(1rem, 3vw, 1.5rem)",
+                  lineHeight: 1.4,
+                  padding: "0 16px",
                 }}
               >
                 Calculez le coût total de possession de votre moto en France
