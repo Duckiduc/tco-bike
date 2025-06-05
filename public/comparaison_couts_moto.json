@@ -1,0 +1,35 @@
+[
+  {
+    "Catégorie": "Petites cylindrées",
+    "Dépréciation": 637.5,
+    "Assurance": 450.0,
+    "Entretien": 225.0,
+    "Carburant": 475.0,
+    "Pneus": 100.0,
+    "Contrôle technique": 30.0,
+    "Stationnement": 450.0,
+    "Total": 2367.5
+  },
+  {
+    "Catégorie": "Moyennes cylindrées",
+    "Dépréciation": 1237.5,
+    "Assurance": 670.0,
+    "Entretien": 375.0,
+    "Carburant": 950.0,
+    "Pneus": 208.33,
+    "Contrôle technique": 35.0,
+    "Stationnement": 450.0,
+    "Total": 3925.83
+  },
+  {
+    "Catégorie": "Grosses cylindrées",
+    "Dépréciation": 2250.0,
+    "Assurance": 850.0,
+    "Entretien": 575.0,
+    "Carburant": 1235.0,
+    "Pneus": 400.0,
+    "Contrôle technique": 40.0,
+    "Stationnement": 450.0,
+    "Total": 5800.0
+  }
+]

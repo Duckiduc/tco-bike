@@ -1,0 +1,12 @@
+/* Custom styles for the TCO Calculator */
+.MuiPaper-root {
+  border-radius: 12px !important;
+}
+
+.MuiCard-root {
+  transition: transform 0.2s ease-in-out;
+}
+
+.MuiCard-root:hover {
+  transform: translateY(-2px);
+}
