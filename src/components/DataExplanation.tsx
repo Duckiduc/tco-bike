@@ -42,7 +42,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState("1");
 
-  const topBikes = bikeData.slice(0, 10);
+  const topBikes = bikeData.slice(0, 20);
   const topBrands = brandData.slice(0, 8);
 
   const brandChartData = topBrands.map((brand) => ({
@@ -142,7 +142,7 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
                 level={4}
                 style={{ marginBottom: "0.5rem", fontWeight: 600 }}
               >
-                Top 10 des motos les plus populaires en France (2024)
+                Top 20 des motos les plus populaires en France (2024)
               </Title>
               <Text type="secondary">
                 Classement basé sur les données de ventes et d'immatriculations

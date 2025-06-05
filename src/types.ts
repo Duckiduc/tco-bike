@@ -40,7 +40,8 @@ export interface BikeData {
 }
 
 export interface BrandData {
-  Marque: string;
+  Marque?: string;
+  '﻿Marque'?: string;
   Parts_Marché_Pourcentage: number;
   'Prix_Moyen_Gamme (€)': number;
   'Assurance_Moyenne_Annuelle (€)': number;
