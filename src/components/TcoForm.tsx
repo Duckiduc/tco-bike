@@ -1,16 +1,9 @@
-import React, { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  InputAdornment,
-  Chip,
-} from '@mui/material';
-import { Calculate, TwoWheeler } from '@mui/icons-material';
-import type { TcoData, TcoFormData } from '../types';
+import React, { useState } from "react";
+import { Card, Typography, Input, Button, Space, Tag, Row, Col } from "antd";
+import { CalculatorOutlined, CarOutlined } from "@ant-design/icons";
+import type { TcoData, TcoFormData } from "../types";
+
+const { Title, Text } = Typography;
 
 interface TcoFormProps {
   onCalculate: (data: TcoData) => void;
@@ -18,37 +11,37 @@ interface TcoFormProps {
 
 const defaultValues: Record<string, TcoFormData> = {
   small: {
-    category: 'small',
+    category: "small",
     purchasePrice: 4250,
     annualKm: 10000,
     insuranceCost: 450,
     maintenanceCost: 225,
     fuelConsumption: 2.5,
-    fuelPrice: 1.90,
+    fuelPrice: 1.9,
     tireCost: 150,
     tireLifespan: 15000,
     parkingCost: 50,
   },
   medium: {
-    category: 'medium',
+    category: "medium",
     purchasePrice: 8250,
     annualKm: 10000,
     insuranceCost: 670,
     maintenanceCost: 375,
     fuelConsumption: 5.0,
-    fuelPrice: 1.90,
+    fuelPrice: 1.9,
     tireCost: 250,
     tireLifespan: 12000,
     parkingCost: 50,
   },
   large: {
-    category: 'large',
+    category: "large",
     purchasePrice: 15000,
     annualKm: 10000,
     insuranceCost: 850,
     maintenanceCost: 575,
     fuelConsumption: 6.5,
-    fuelPrice: 1.90,
+    fuelPrice: 1.9,
     tireCost: 400,
     tireLifespan: 10000,
     parkingCost: 50,
@@ -58,17 +51,17 @@ const defaultValues: Record<string, TcoFormData> = {
 const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
   const [formData, setFormData] = useState<TcoFormData>(defaultValues.medium);
 
-  const handleChange = (field: keyof TcoFormData) => (
-    event: React.ChangeEvent<HTMLInputElement | { value: unknown }>
-  ) => {
-    const value = event.target.value as string;
-    setFormData(prev => ({
-      ...prev,
-      [field]: field === 'category' ? value : parseFloat(value) || 0,
-    }));
-  };
+  const handleChange =
+    (field: keyof TcoFormData) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      setFormData((prev) => ({
+        ...prev,
+        [field]: field === "category" ? value : parseFloat(value) || 0,
+      }));
+    };
 
-  const handleCategoryChange = (category: 'small' | 'medium' | 'large') => {
+  const handleCategoryChange = (category: "small" | "medium" | "large") => {
     setFormData(defaultValues[category]);
   };
 
@@ -92,8 +85,14 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
     const technicalCost = 70 / 2; // Technical inspection every 2 years
     const parkingAnnualCost = parkingCost * 12;
 
-    const totalCost = depreciation + insuranceCost + maintenanceCost +
-      fuelAnnualCost + tireAnnualCost + technicalCost + parkingAnnualCost;
+    const totalCost =
+      depreciation +
+      insuranceCost +
+      maintenanceCost +
+      fuelAnnualCost +
+      tireAnnualCost +
+      technicalCost +
+      parkingAnnualCost;
 
     const tcoData: TcoData = {
       ...formData,
@@ -113,182 +112,254 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
   };
 
   return (
-    <Card sx={{ height: 'fit-content' }}>
-      <CardContent sx={{ p: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <TwoWheeler sx={{ color: 'secondary.main', mr: 2, fontSize: 28 }} />
-          <Typography variant="h4" component="h2" sx={{ fontWeight: 600 }}>
+    <Card
+      style={{
+        height: "fit-content",
+        boxShadow:
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        border: "1px solid #f1f5f9",
+      }}
+    >
+      <Space
+        direction="vertical"
+        size="large"
+        style={{ width: "100%", padding: 32 }}
+      >
+        <Space align="center">
+          <CarOutlined style={{ color: "#2196f3", fontSize: 28 }} />
+          <Title level={3} style={{ margin: 0, fontWeight: 600 }}>
             Paramètres de votre moto
-          </Typography>
-        </Box>
+          </Title>
+        </Space>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
           {/* Category Selection */}
-          <Box>
-            <Typography variant="body2" sx={{ mb: 1.5, fontWeight: 500, color: 'text.secondary' }}>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Text style={{ fontWeight: 500, color: "#666666" }}>
               Catégorie de moto
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              <Chip
-                label="Petite cylindrée (≤125cc)"
-                variant={formData.category === 'small' ? 'filled' : 'outlined'}
-                color={formData.category === 'small' ? 'secondary' : 'default'}
-                onClick={() => handleCategoryChange('small')}
-                sx={{ cursor: 'pointer', fontSize: '0.875rem' }}
-              />
-              <Chip
-                label="Moyenne cylindrée (126-599cc)"
-                variant={formData.category === 'medium' ? 'filled' : 'outlined'}
-                color={formData.category === 'medium' ? 'secondary' : 'default'}
-                onClick={() => handleCategoryChange('medium')}
-                sx={{ cursor: 'pointer', fontSize: '0.875rem' }}
-              />
-              <Chip
-                label="Grosse cylindrée (≥600cc)"
-                variant={formData.category === 'large' ? 'filled' : 'outlined'}
-                color={formData.category === 'large' ? 'secondary' : 'default'}
-                onClick={() => handleCategoryChange('large')}
-                sx={{ cursor: 'pointer', fontSize: '0.875rem' }}
-              />
-            </Box>
-          </Box>
+            </Text>
+            <Space wrap>
+              <Tag.CheckableTag
+                checked={formData.category === "small"}
+                onChange={() => handleCategoryChange("small")}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  borderRadius: 6,
+                }}
+              >
+                Petite cylindrée (≤125cc)
+              </Tag.CheckableTag>
+              <Tag.CheckableTag
+                checked={formData.category === "medium"}
+                onChange={() => handleCategoryChange("medium")}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  borderRadius: 6,
+                }}
+              >
+                Moyenne cylindrée (126-599cc)
+              </Tag.CheckableTag>
+              <Tag.CheckableTag
+                checked={formData.category === "large"}
+                onChange={() => handleCategoryChange("large")}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  borderRadius: 6,
+                }}
+              >
+                Grosse cylindrée (≥600cc)
+              </Tag.CheckableTag>
+            </Space>
+          </Space>
 
           {/* Form Fields */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
-            <TextField
-              fullWidth
-              label="Prix d'achat"
-              type="number"
-              value={formData.purchasePrice}
-              onChange={handleChange('purchasePrice')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+          <Row gutter={[24, 24]}>
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Prix d'achat</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.purchasePrice}
+                  onChange={handleChange("purchasePrice")}
+                  suffix="€"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Kilométrage annuel"
-              type="number"
-              value={formData.annualKm}
-              onChange={handleChange('annualKm')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">km</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Kilométrage annuel</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.annualKm}
+                  onChange={handleChange("annualKm")}
+                  suffix="km"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Coût assurance annuel"
-              type="number"
-              value={formData.insuranceCost}
-              onChange={handleChange('insuranceCost')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Coût assurance annuel</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.insuranceCost}
+                  onChange={handleChange("insuranceCost")}
+                  suffix="€"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Coût entretien annuel"
-              type="number"
-              value={formData.maintenanceCost}
-              onChange={handleChange('maintenanceCost')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Coût entretien annuel</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.maintenanceCost}
+                  onChange={handleChange("maintenanceCost")}
+                  suffix="€"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Consommation"
-              type="number"
-              inputProps={{ step: 0.1 }}
-              value={formData.fuelConsumption}
-              onChange={handleChange('fuelConsumption')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">L/100km</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Consommation</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  step={0.1}
+                  value={formData.fuelConsumption}
+                  onChange={handleChange("fuelConsumption")}
+                  suffix="L/100km"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Prix du carburant"
-              type="number"
-              inputProps={{ step: 0.01 }}
-              value={formData.fuelPrice}
-              onChange={handleChange('fuelPrice')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">€/L</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Prix du carburant</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  step={0.01}
+                  value={formData.fuelPrice}
+                  onChange={handleChange("fuelPrice")}
+                  suffix="€/L"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Coût pneus par changement"
-              type="number"
-              value={formData.tireCost}
-              onChange={handleChange('tireCost')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Coût pneus par changement</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.tireCost}
+                  onChange={handleChange("tireCost")}
+                  suffix="€"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
 
-            <TextField
-              fullWidth
-              label="Durée de vie pneus"
-              type="number"
-              value={formData.tireLifespan}
-              onChange={handleChange('tireLifespan')}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">km</InputAdornment>,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-            />
-          </Box>
+            <Col xs={24} sm={12}>
+              <Space
+                direction="vertical"
+                size="small"
+                style={{ width: "100%" }}
+              >
+                <Text>Durée de vie pneus</Text>
+                <Input
+                  size="large"
+                  type="number"
+                  value={formData.tireLifespan}
+                  onChange={handleChange("tireLifespan")}
+                  suffix="km"
+                  style={{ borderRadius: 8 }}
+                />
+              </Space>
+            </Col>
+          </Row>
 
-          <TextField
-            fullWidth
-            label="Coût stationnement mensuel"
-            type="number"
-            value={formData.parkingCost}
-            onChange={handleChange('parkingCost')}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">€</InputAdornment>,
-            }}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-          />
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Text>Coût stationnement mensuel</Text>
+            <Input
+              size="large"
+              type="number"
+              value={formData.parkingCost}
+              onChange={handleChange("parkingCost")}
+              suffix="€"
+              style={{ borderRadius: 8 }}
+            />
+          </Space>
 
           <Button
-            fullWidth
-            variant="contained"
+            type="primary"
             size="large"
-            startIcon={<Calculate />}
+            icon={<CalculatorOutlined />}
             onClick={calculateTco}
-            sx={{
-              mt: 2,
-              py: 1.5,
-              borderRadius: 2,
-              background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-              },
+            style={{
+              marginTop: 16,
+              borderRadius: 8,
+              background: "linear-gradient(135deg, #2196f3 0%, #1976d2 100%)",
+              border: "none",
               fontWeight: 600,
-              fontSize: '1.1rem',
-              textTransform: 'none',
+              fontSize: "1.1rem",
+              height: "auto",
+              padding: "12px 24px",
             }}
+            block
           >
             Calculer le TCO
           </Button>
-        </Box>
-      </CardContent>
+        </Space>
+      </Space>
     </Card>
   );
 };

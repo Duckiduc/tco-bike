@@ -1,15 +1,22 @@
-import React from 'react';
+import React from "react";
+import { Typography, Card, Tag, Alert, Space } from "antd";
 import {
-  Typography,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Alert,
-} from '@mui/material';
-import { PieChart, BarChart } from '@mui/x-charts';
-import { Assessment, TrendingUp, TrendingDown } from '@mui/icons-material';
-import type { TcoData, ComparisonData } from '../types';
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { FundOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
+import type { TcoData, ComparisonData } from "../types";
+
+const { Title, Text } = Typography;
 
 interface TcoResultsProps {
   data: TcoData | null;
@@ -19,16 +26,20 @@ interface TcoResultsProps {
 const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
   if (!data) {
     return (
-      <Card sx={{ height: 'fit-content' }}>
-        <CardContent sx={{ p: 4, textAlign: 'center' }}>
-          <Assessment sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-          <Typography variant="h4" component="h2" sx={{ fontWeight: 600, mb: 2 }}>
+      <Card>
+        {" "}
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <FundOutlined
+            style={{ fontSize: "4rem", color: "#ccc", marginBottom: "1rem" }}
+          />
+          <Title level={2} style={{ fontWeight: 600, marginBottom: "1rem" }}>
             Résultats TCO
-          </Typography>
-          <Typography color="text.secondary">
-            Remplissez le formulaire et cliquez sur "Calculer le TCO" pour voir vos résultats
-          </Typography>
-        </CardContent>
+          </Title>
+          <Text type="secondary">
+            Remplissez le formulaire et cliquez sur "Calculer le TCO" pour voir
+            vos résultats
+          </Text>
+        </div>
       </Card>
     );
   }
@@ -36,204 +47,257 @@ const TcoResults: React.FC<TcoResultsProps> = ({ data, comparisonData }) => {
   const { totalCost, breakdown, category } = data;
 
   const pieData = [
-    { id: 0, value: breakdown.depreciation, label: 'Dépréciation' },
-    { id: 1, value: breakdown.insurance, label: 'Assurance' },
-    { id: 2, value: breakdown.maintenance, label: 'Entretien' },
-    { id: 3, value: breakdown.fuel, label: 'Carburant' },
-    { id: 4, value: breakdown.tires, label: 'Pneus' },
-    { id: 5, value: breakdown.technical, label: 'Contrôle technique' },
-    { id: 6, value: breakdown.parking, label: 'Stationnement' },
+    { name: "Dépréciation", value: breakdown.depreciation, fill: "#8884d8" },
+    { name: "Assurance", value: breakdown.insurance, fill: "#82ca9d" },
+    { name: "Entretien", value: breakdown.maintenance, fill: "#ffc658" },
+    { name: "Carburant", value: breakdown.fuel, fill: "#ff7300" },
+    { name: "Pneus", value: breakdown.tires, fill: "#00ff00" },
+    { name: "Contrôle technique", value: breakdown.technical, fill: "#ff00ff" },
+    { name: "Stationnement", value: breakdown.parking, fill: "#00ffff" },
   ];
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case 'small': return 'Petites cylindrées';
-      case 'medium': return 'Moyennes cylindrées';
-      case 'large': return 'Grosses cylindrées';
-      default: return category;
+      case "small":
+        return "Petites cylindrées";
+      case "medium":
+        return "Moyennes cylindrées";
+      case "large":
+        return "Grosses cylindrées";
+      default:
+        return category;
     }
   };
 
-  const comparisonAverage = comparisonData.find(item => 
-    item.Catégorie === getCategoryLabel(category)
+  const comparisonAverage = comparisonData.find(
+    (item) => item.Catégorie === getCategoryLabel(category)
   );
 
-  const comparisonChartData = comparisonAverage ? [
-    {
-      category: 'Dépréciation',
-      yours: breakdown.depreciation,
-      average: comparisonAverage.Dépréciation,
-    },
-    {
-      category: 'Assurance',
-      yours: breakdown.insurance,
-      average: comparisonAverage.Assurance,
-    },
-    {
-      category: 'Entretien',
-      yours: breakdown.maintenance,
-      average: comparisonAverage.Entretien,
-    },
-    {
-      category: 'Carburant',
-      yours: breakdown.fuel,
-      average: comparisonAverage.Carburant,
-    },
-    {
-      category: 'Pneus',
-      yours: breakdown.tires,
-      average: comparisonAverage.Pneus,
-    },
-    {
-      category: 'Stationnement',
-      yours: breakdown.parking,
-      average: comparisonAverage.Stationnement,
-    },
-  ] : [];
+  const comparisonChartData = comparisonAverage
+    ? [
+        {
+          category: "Dépréciation",
+          yours: breakdown.depreciation,
+          average: comparisonAverage.Dépréciation,
+        },
+        {
+          category: "Assurance",
+          yours: breakdown.insurance,
+          average: comparisonAverage.Assurance,
+        },
+        {
+          category: "Entretien",
+          yours: breakdown.maintenance,
+          average: comparisonAverage.Entretien,
+        },
+        {
+          category: "Carburant",
+          yours: breakdown.fuel,
+          average: comparisonAverage.Carburant,
+        },
+        {
+          category: "Pneus",
+          yours: breakdown.tires,
+          average: comparisonAverage.Pneus,
+        },
+        {
+          category: "Stationnement",
+          yours: breakdown.parking,
+          average: comparisonAverage.Stationnement,
+        },
+      ]
+    : [];
 
   const costLabels: Record<string, string> = {
-    depreciation: 'Dépréciation',
-    insurance: 'Assurance',
-    maintenance: 'Entretien',
-    fuel: 'Carburant',
-    tires: 'Pneus',
-    technical: 'Contrôle technique',
-    parking: 'Stationnement',
+    depreciation: "Dépréciation",
+    insurance: "Assurance",
+    maintenance: "Entretien",
+    fuel: "Carburant",
+    tires: "Pneus",
+    technical: "Contrôle technique",
+    parking: "Stationnement",
   };
 
-  const isAboveAverage = comparisonAverage && totalCost > comparisonAverage.Total;
-  const difference = comparisonAverage ? Math.abs(totalCost - comparisonAverage.Total) : 0;
+  const isAboveAverage =
+    comparisonAverage && totalCost > comparisonAverage.Total;
+  const difference = comparisonAverage
+    ? Math.abs(totalCost - comparisonAverage.Total)
+    : 0;
 
   return (
-    <Card sx={{ height: 'fit-content' }}>
-      <CardContent sx={{ p: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <Assessment sx={{ color: 'secondary.main', mr: 2, fontSize: 28 }} />
-          <Typography variant="h4" component="h2" sx={{ fontWeight: 600 }}>
+    <Card>
+      <div style={{ padding: "2rem" }}>
+        <Space align="center" style={{ marginBottom: "1.5rem" }}>
+          <FundOutlined style={{ color: "#2196f3", fontSize: "1.75rem" }} />
+          <Title level={2} style={{ fontWeight: 600, margin: 0 }}>
             Résultats TCO
-          </Typography>
-        </Box>
+          </Title>
+        </Space>
 
         {/* Total Cost Card */}
-        <Card sx={{ 
-          mb: 4, 
-          background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
-          color: 'white'
-        }}>
-          <CardContent sx={{ textAlign: 'center', p: 3 }}>
-            <Typography variant="h2" sx={{ fontWeight: 700, mb: 1 }}>
-              {Math.round(totalCost).toLocaleString()} €
-            </Typography>
-            <Typography variant="h6" sx={{ opacity: 0.9 }}>
-              Coût Total de Possession Annuel
-            </Typography>
-          </CardContent>
+        <Card
+          style={{
+            marginBottom: "2rem",
+            background: "linear-gradient(135deg, #2196f3 0%, #1976d2 100%)",
+            color: "white",
+            textAlign: "center",
+          }}
+        >
+          <Title
+            level={1}
+            style={{ fontWeight: 700, marginBottom: "0.5rem", color: "white" }}
+          >
+            {Math.round(totalCost).toLocaleString()} €
+          </Title>
+          <Title level={4} style={{ opacity: 0.9, margin: 0, color: "white" }}>
+            Coût Total de Possession Annuel
+          </Title>
         </Card>
 
         {/* Cost Breakdown */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <div style={{ marginBottom: "2rem" }}>
+          <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
             Répartition des coûts
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          </Title>
+          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             {Object.entries(breakdown).map(([key, value]) => (
-              <Box 
+              <div
                 key={key}
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  p: 2,
-                  backgroundColor: 'grey.50',
-                  borderRadius: 2,
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "1rem",
+                  backgroundColor: "#f5f5f5",
+                  borderRadius: "8px",
                 }}
               >
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {costLabels[key]}
-                </Typography>
-                <Chip 
-                  label={`${Math.round(value).toLocaleString()} €`}
-                  color="secondary"
-                  variant="filled"
-                  sx={{ fontWeight: 600 }}
-                />
-              </Box>
+                <Text style={{ fontWeight: 500 }}>{costLabels[key]}</Text>
+                <Tag color="blue" style={{ fontWeight: 600 }}>
+                  {Math.round(value).toLocaleString()} €
+                </Tag>
+              </div>
             ))}
-          </Box>
-        </Box>
+          </Space>
+        </div>
 
         {/* Pie Chart */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <div style={{ marginBottom: "2rem" }}>
+          <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
             Répartition visuelle
-          </Typography>
-          <Box sx={{ 
-            height: 350,
-            display: 'flex',
-            justifyContent: 'center',
-            backgroundColor: 'grey.50',
-            borderRadius: 2,
-            p: 2
-          }}>
-            <PieChart
-              series={[
-                {
-                  data: pieData,
-                  highlightScope: { fade: 'global', highlight: 'item' },
-                  faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                },
-              ]}
-              height={350}
-            />
-          </Box>
-        </Box>
+          </Title>
+          <div
+            style={{
+              height: "350px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "8px",
+              padding: "1rem",
+            }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value) =>
+                    `${Math.round(Number(value)).toLocaleString()} €`
+                  }
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
         {/* Comparison Chart */}
         {comparisonChartData.length > 0 && (
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+          <div style={{ marginBottom: "2rem" }}>
+            <Title level={4} style={{ marginBottom: "1rem", fontWeight: 600 }}>
               Comparaison avec la moyenne française
-            </Typography>
-            <Box sx={{ 
-              height: 350,
-              backgroundColor: 'grey.50',
-              borderRadius: 2,
-              p: 2
-            }}>
-              <BarChart
-                dataset={comparisonChartData}
-                xAxis={[{ scaleType: 'band', dataKey: 'category' }]}
-                series={[
-                  { dataKey: 'yours', label: 'Vos coûts', color: '#2196f3' },
-                  { dataKey: 'average', label: 'Moyenne française', color: '#1976d2' },
-                ]}
-                height={350}
-              />
-            </Box>
-          </Box>
+            </Title>
+            <div
+              style={{
+                height: "350px",
+                backgroundColor: "#f5f5f5",
+                borderRadius: "8px",
+                padding: "1rem",
+              }}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={comparisonChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="category" />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value) =>
+                      `${Math.round(Number(value)).toLocaleString()} €`
+                    }
+                  />
+                  <Legend />
+                  <Bar dataKey="yours" fill="#2196f3" name="Vos coûts" />
+                  <Bar
+                    dataKey="average"
+                    fill="#1976d2"
+                    name="Moyenne française"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         )}
 
         {/* Comparison Summary */}
         {comparisonAverage && (
-          <Alert 
-            severity={isAboveAverage ? 'warning' : 'success'}
-            icon={isAboveAverage ? <TrendingUp /> : <TrendingDown />}
-            sx={{ mt: 2 }}
-          >
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-              <strong>Comparaison totale:</strong> Vos coûts ({Math.round(totalCost).toLocaleString()} €) 
-              vs moyenne française ({Math.round(comparisonAverage.Total).toLocaleString()} €)
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 0.5 }}>
-              {isAboveAverage ? (
-                <>Vous dépensez <strong>{Math.round(difference).toLocaleString()} € de plus</strong> que la moyenne</>
-              ) : (
-                <>Vous économisez <strong>{Math.round(difference).toLocaleString()} €</strong> par rapport à la moyenne</>
-              )}
-            </Typography>
-          </Alert>
+          <Alert
+            type={isAboveAverage ? "warning" : "success"}
+            icon={isAboveAverage ? <RiseOutlined /> : <FallOutlined />}
+            message={
+              <div>
+                <Text style={{ fontWeight: 500 }}>
+                  <strong>Comparaison totale:</strong> Vos coûts (
+                  {Math.round(totalCost).toLocaleString()} €) vs moyenne
+                  française (
+                  {Math.round(comparisonAverage.Total).toLocaleString()} €)
+                </Text>
+                <div style={{ marginTop: "0.5rem" }}>
+                  <Text>
+                    {isAboveAverage ? (
+                      <>
+                        Vous dépensez{" "}
+                        <strong>
+                          {Math.round(difference).toLocaleString()} € de plus
+                        </strong>{" "}
+                        que la moyenne
+                      </>
+                    ) : (
+                      <>
+                        Vous économisez{" "}
+                        <strong>
+                          {Math.round(difference).toLocaleString()} €
+                        </strong>{" "}
+                        par rapport à la moyenne
+                      </>
+                    )}
+                  </Text>
+                </div>
+              </div>
+            }
+          />
         )}
-      </CardContent>
+      </div>
     </Card>
   );
 };
