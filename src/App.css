@@ -1,16 +1,3 @@
-/* Custom styles for the TCO Calculator */
-.MuiPaper-root {
-  border-radius: 12px !important;
-}
-
-.MuiCard-root {
-  transition: transform 0.2s ease-in-out;
-}
-
-.MuiCard-root:hover {
-  transform: translateY(-2px);
-}
-
 /* Mobile-first responsive improvements */
 @media (max-width: 768px) {
   /* Ensure full width usage on mobile */
@@ -93,14 +80,6 @@
   .tco-chart-container {
     height: 280px;
     padding: 0.5rem;
-  }
-
-  .tco-total-card {
-    margin-bottom: 1.5rem;
-  }
-
-  .tco-total-card .ant-typography {
-    font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
   }
 
   /* Data Explanation component mobile styles */
@@ -273,10 +252,6 @@
     padding: 0.25rem;
   }
 
-  .tco-total-card .ant-typography {
-    font-size: clamp(1.2rem, 3.5vw, 2rem) !important;
-  }
-
   .data-brand-chart {
     height: 250px;
     padding: 0.25rem;
@@ -331,30 +306,276 @@
 
 /* TCO Results specific styles */
 .tco-results-container {
-  padding: 2rem;
+  padding: 0.5rem;
 }
 
 .tco-breakdown-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background-color: #f5f5f5;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #f6f7f9;
   border-radius: 8px;
+}
+
+.tco-breakdown-total {
+  background-color: #e8f1fd;
 }
 
 .tco-chart-container {
-  height: 350px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  padding: 1rem;
+  height: 320px;
+  padding: 0.5rem 0;
 }
 
-.tco-total-card {
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+/* Cards */
+.tco-card {
+  border: 1px solid #eef1f5;
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.08),
+    0 1px 2px -1px rgb(0 0 0 / 0.08);
+}
+
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -8px rgb(33 150 243 / 0.25);
+}
+
+/* Summary bar */
+.tco-summary {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
   color: white;
-  text-align: center;
+  background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
+  box-shadow: 0 12px 28px -12px rgb(21 101 192 / 0.6);
+}
+
+.tco-summary-main {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+
+.tco-summary-label {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.tco-summary-value {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.tco-summary-value small {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.tco-summary-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.tco-summary-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.tco-summary-stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tco-summary-stat-label {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+/* Cost breakdown */
+.tco-stack {
+  display: flex;
+  gap: 2px;
+  height: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.tco-stack-segment {
+  min-width: 2px;
+  border-radius: 4px;
+  transition: flex-grow 0.5s ease;
+}
+
+.tco-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tco-row {
+  display: grid;
+  grid-template-columns: 12px minmax(110px, 1.2fr) 2fr 80px 44px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.tco-row:hover {
+  background-color: #f6f7f9;
+}
+
+.tco-row-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.tco-row-label {
+  font-weight: 500;
+}
+
+.tco-row-value {
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tco-row-share {
+  color: #898781;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tco-bar-track {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #eef0f3;
+  overflow: hidden;
+}
+
+.tco-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* Form sections */
+.tco-form-sections > .ant-collapse-item > .ant-collapse-header {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.tco-form-sections > .ant-collapse-item {
+  border-top: 1px solid #eef1f5;
+}
+
+.tco-form-sections .ant-collapse-content-box {
+  padding: 4px 0 20px !important;
+}
+
+/* Animations */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.reveal {
+  animation: reveal 0.5s ease both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.fade-in,
+.tco-tabs .ant-tabs-tabpane-active {
+  animation: fade-in 0.35s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .fade-in,
+  .tco-tabs .ant-tabs-tabpane-active {
+    animation: none;
+  }
+
+  .hover-lift,
+  .tco-stack-segment,
+  .tco-bar-fill {
+    transition: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .tco-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .tco-summary {
+    padding: 1rem;
+  }
+
+  .tco-summary-stats {
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .tco-summary-share {
+    width: 100%;
+  }
+
+  .tco-results-container {
+    padding: 0;
+  }
+
+  .tco-chart-container {
+    height: 260px;
+  }
+
+  .tco-row {
+    grid-template-columns: 12px 1fr 80px 44px;
+  }
+
+  .tco-row-bar {
+    display: none;
+  }
 }
 
 /* Data Explanation component styles */

@@ -4,32 +4,32 @@
     "Dépréciation": 637.5,
     "Assurance": 450.0,
     "Entretien": 225.0,
-    "Carburant": 475.0,
+    "Carburant": 540.0,
     "Pneus": 100.0,
-    "Contrôle technique": 30.0,
+    "Contrôle technique": 23.33,
     "Stationnement": 450.0,
-    "Total": 2367.5
+    "Total": 2425.83
   },
   {
     "Catégorie": "Moyennes cylindrées",
     "Dépréciation": 1237.5,
     "Assurance": 670.0,
     "Entretien": 375.0,
-    "Carburant": 950.0,
+    "Carburant": 1080.0,
     "Pneus": 208.33,
-    "Contrôle technique": 35.0,
+    "Contrôle technique": 23.33,
     "Stationnement": 450.0,
-    "Total": 3925.83
+    "Total": 4044.16
   },
   {
     "Catégorie": "Grosses cylindrées",
     "Dépréciation": 2250.0,
     "Assurance": 850.0,
     "Entretien": 575.0,
-    "Carburant": 1235.0,
+    "Carburant": 1404.0,
     "Pneus": 400.0,
-    "Contrôle technique": 40.0,
+    "Contrôle technique": 23.33,
     "Stationnement": 450.0,
-    "Total": 5800.0
+    "Total": 5952.33
   }
 ]

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   Typography,
@@ -9,150 +9,455 @@ import {
   Row,
   Col,
   Checkbox,
+  Select,
+  Slider,
+  Collapse,
 } from "antd";
-import { CalculatorOutlined, CarOutlined } from "@ant-design/icons";
-import type { TcoData, TcoFormData } from "../types";
+import { CarOutlined } from "@ant-design/icons";
+import type {
+  BikeData,
+  Category,
+  Energy,
+  LiveFuelPrice,
+  TcoFormData,
+} from "../types";
+import {
+  MAX_YEARS,
+  categoryDefaults,
+  cityParkingCost,
+  presetFromBike,
+} from "../lib/tco";
+import { REGIONS, YOUNG_RIDER_SURCHARGE } from "../lib/reference";
 
 const { Title, Text } = Typography;
 
 interface TcoFormProps {
-  onCalculate: (data: TcoData) => void;
+  value: TcoFormData;
+  onChange: (data: TcoFormData) => void;
+  bikeData: BikeData[];
+  liveFuelPrice: LiveFuelPrice | null;
 }
 
-const defaultValues: Record<string, TcoFormData> = {
-  small: {
-    category: "small",
-    purchasePrice: 4250,
-    annualKm: 10000,
-    insuranceCost: 450,
-    maintenanceCost: 225,
-    fuelConsumption: 2.5,
-    fuelPrice: 1.9,
-    tireCost: 150,
-    tireLifespan: 15000,
-    parkingCost: 50,
-    includeDepreciation: true,
-  },
-  medium: {
-    category: "medium",
-    purchasePrice: 8250,
-    annualKm: 10000,
-    insuranceCost: 670,
-    maintenanceCost: 375,
-    fuelConsumption: 5.0,
-    fuelPrice: 1.9,
-    tireCost: 250,
-    tireLifespan: 12000,
-    parkingCost: 50,
-    includeDepreciation: true,
-  },
-  large: {
-    category: "large",
-    purchasePrice: 15000,
-    annualKm: 10000,
-    insuranceCost: 850,
-    maintenanceCost: 575,
-    fuelConsumption: 6.5,
-    fuelPrice: 1.9,
-    tireCost: 400,
-    tireLifespan: 10000,
-    parkingCost: 50,
-    includeDepreciation: true,
-  },
+const tagStyle: React.CSSProperties = {
+  padding: "8px 12px",
+  fontSize: "14px",
+  cursor: "pointer",
+  borderRadius: 6,
+  minWidth: "fit-content",
+  textAlign: "center",
+  display: "inline-block",
 };
 
-const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
-  const [formData, setFormData] = useState<TcoFormData>(defaultValues.medium);
+const categoryLabels: Record<Category, string> = {
+  small: "Petite (≤125cc)",
+  medium: "Moyenne (126-599cc)",
+  large: "Grosse (≥600cc)",
+};
 
-  const handleChange =
-    (field: keyof TcoFormData) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setFormData((prev) => ({
-        ...prev,
-        [field]: field === "category" ? value : parseFloat(value) || 0,
-      }));
-    };
+const energyLabels: Record<Energy, string> = {
+  petrol: "Essence",
+  electric: "Électrique",
+};
 
-  const handleCheckboxChange =
-    (field: keyof TcoFormData) => (checked: boolean) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: checked,
-      }));
-    };
+const NumberField: React.FC<{
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  suffix: string;
+  step?: number;
+  hint?: React.ReactNode;
+}> = ({ label, value, onChange, suffix, step, hint }) => (
+  <Space direction="vertical" size="small" style={{ width: "100%" }}>
+    <Text>{label}</Text>
+    <Input
+      size="large"
+      type="number"
+      min={0}
+      step={step}
+      value={value}
+      onChange={(event) => onChange(parseFloat(event.target.value) || 0)}
+      suffix={suffix}
+      style={{ borderRadius: 8 }}
+    />
+    {hint}
+  </Space>
+);
 
-  const handleCategoryChange = (category: "small" | "medium" | "large") => {
-    setFormData({
-      ...defaultValues[category],
-      includeDepreciation: formData.includeDepreciation,
-    });
+const TcoForm: React.FC<TcoFormProps> = ({
+  value: formData,
+  onChange,
+  bikeData,
+  liveFuelPrice,
+}) => {
+  const update = (patch: Partial<TcoFormData>) => {
+    const next = { ...formData, ...patch };
+    // A city profile drives the parking cost until the user edits it
+    if ("city" in patch || "energy" in patch) {
+      const parking = cityParkingCost(next);
+      if (parking !== null) next.parkingCost = parking;
+    }
+    onChange(next);
   };
 
-  const calculateTco = () => {
-    const {
-      purchasePrice,
-      annualKm,
-      insuranceCost,
-      maintenanceCost,
-      fuelConsumption,
-      fuelPrice,
-      tireCost,
-      tireLifespan,
-      parkingCost,
-      includeDepreciation,
-    } = formData;
+  const field = (key: keyof TcoFormData) => (fieldValue: number) =>
+    update({ [key]: fieldValue });
 
-    // Calculations
-    const depreciation = includeDepreciation ? purchasePrice * 0.15 : 0; // 15% per year if included
-    const fuelAnnualCost = (fuelConsumption * fuelPrice * annualKm) / 100;
-    const tireAnnualCost = (tireCost * annualKm) / tireLifespan;
-    const technicalCost = 70 / 2; // Technical inspection every 2 years
-    const parkingAnnualCost = parkingCost * 12;
-
-    const totalCost =
-      depreciation +
-      insuranceCost +
-      maintenanceCost +
-      fuelAnnualCost +
-      tireAnnualCost +
-      technicalCost +
-      parkingAnnualCost;
-
-    const tcoData: TcoData = {
-      ...formData,
-      totalCost,
-      breakdown: {
-        depreciation,
-        insurance: insuranceCost,
-        maintenance: maintenanceCost,
-        fuel: fuelAnnualCost,
-        tires: tireAnnualCost,
-        technical: technicalCost,
-        parking: parkingAnnualCost,
-      },
-    };
-
-    onCalculate(tcoData);
+  const handleModelChange = (model?: string) => {
+    const bike = bikeData.find((item) => item.Modèle === model);
+    update(bike ? presetFromBike(bike) : { model: "" });
   };
+
+  const electric = formData.energy === "electric";
+
+  const bikeSection = (
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      {/* Model Selection */}
+      <Space direction="vertical" size="small" style={{ width: "100%" }}>
+        <Text style={{ fontWeight: 500, color: "#666666" }}>
+          Préremplir avec un modèle populaire
+        </Text>
+        <Select
+          size="large"
+          showSearch
+          allowClear
+          placeholder="Choisir un modèle (optionnel)"
+          value={formData.model || undefined}
+          onChange={handleModelChange}
+          options={bikeData.map((bike) => ({
+            value: bike.Modèle,
+            label: bike.Modèle,
+          }))}
+          style={{ width: "100%" }}
+        />
+      </Space>
+
+      {/* Category Selection */}
+      <Space direction="vertical" size="small" style={{ width: "100%" }}>
+        <Text style={{ fontWeight: 500, color: "#666666" }}>
+          Catégorie de moto
+        </Text>
+        <Space wrap style={{ width: "100%" }}>
+          {(Object.keys(categoryLabels) as Category[]).map((category) => (
+            <Tag.CheckableTag
+              key={category}
+              checked={formData.category === category}
+              onChange={() =>
+                update({
+                  ...categoryDefaults[category],
+                  category,
+                  model: "",
+                })
+              }
+              style={tagStyle}
+            >
+              {categoryLabels[category]}
+            </Tag.CheckableTag>
+          ))}
+        </Space>
+      </Space>
+
+      {/* Energy Selection */}
+      <Space direction="vertical" size="small" style={{ width: "100%" }}>
+        <Text style={{ fontWeight: 500, color: "#666666" }}>Énergie</Text>
+        <Space wrap style={{ width: "100%" }}>
+          {(Object.keys(energyLabels) as Energy[]).map((energy) => (
+            <Tag.CheckableTag
+              key={energy}
+              checked={formData.energy === energy}
+              onChange={() => update({ energy })}
+              style={tagStyle}
+            >
+              {energyLabels[energy]}
+            </Tag.CheckableTag>
+          ))}
+        </Space>
+      </Space>
+
+      {/* Form Fields */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Prix d'achat"
+            value={formData.purchasePrice}
+            onChange={field("purchasePrice")}
+            suffix="€"
+          />
+        </Col>
+
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Âge à l'achat (0 = neuve)"
+            value={formData.bikeAge}
+            onChange={field("bikeAge")}
+            suffix="ans"
+          />
+        </Col>
+
+        <Col xs={24}>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Text>
+              Durée de détention :{" "}
+              <strong>
+                {formData.years} an{formData.years > 1 ? "s" : ""}
+              </strong>
+            </Text>
+            <Slider
+              min={1}
+              max={MAX_YEARS}
+              value={formData.years}
+              onChange={field("years")}
+            />
+          </Space>
+        </Col>
+
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Kilométrage annuel"
+            value={formData.annualKm}
+            onChange={field("annualKm")}
+            suffix="km"
+          />
+        </Col>
+      </Row>
+    </Space>
+  );
+
+  const usageSection = (
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Coût assurance annuel"
+            value={formData.insuranceCost}
+            onChange={field("insuranceCost")}
+            suffix="€"
+          />
+        </Col>
+
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Coût entretien annuel"
+            value={formData.maintenanceCost}
+            onChange={field("maintenanceCost")}
+            suffix="€"
+          />
+        </Col>
+
+        {electric ? (
+          <>
+            <Col xs={24} sm={12}>
+              <NumberField
+                label="Consommation"
+                value={formData.elecConsumption}
+                onChange={field("elecConsumption")}
+                suffix="kWh/100km"
+                step={0.1}
+              />
+            </Col>
+            <Col xs={24} sm={12}>
+              <NumberField
+                label="Prix de l'électricité"
+                value={formData.elecPrice}
+                onChange={field("elecPrice")}
+                suffix="€/kWh"
+                step={0.01}
+              />
+            </Col>
+          </>
+        ) : (
+          <>
+            <Col xs={24} sm={12}>
+              <NumberField
+                label="Consommation"
+                value={formData.fuelConsumption}
+                onChange={field("fuelConsumption")}
+                suffix="L/100km"
+                step={0.1}
+              />
+            </Col>
+            <Col xs={24} sm={12}>
+              <NumberField
+                label="Prix du carburant"
+                value={formData.fuelPrice}
+                onChange={field("fuelPrice")}
+                suffix="€/L"
+                step={0.01}
+                hint={
+                  liveFuelPrice &&
+                  liveFuelPrice.price !== formData.fuelPrice && (
+                    <Button
+                      type="link"
+                      size="small"
+                      style={{ padding: 0, height: "auto" }}
+                      onClick={() => update({ fuelPrice: liveFuelPrice.price })}
+                    >
+                      SP95-E10 au {liveFuelPrice.date} :{" "}
+                      {liveFuelPrice.price.toLocaleString("fr-FR")} €/L,
+                      appliquer
+                    </Button>
+                  )
+                }
+              />
+            </Col>
+          </>
+        )}
+
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Coût pneus par changement"
+            value={formData.tireCost}
+            onChange={field("tireCost")}
+            suffix="€"
+          />
+        </Col>
+
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Durée de vie pneus"
+            value={formData.tireLifespan}
+            onChange={field("tireLifespan")}
+            suffix="km"
+          />
+        </Col>
+      </Row>
+
+      <Space direction="vertical" size="small">
+        <Checkbox
+          checked={formData.includeDepreciation}
+          onChange={(e) => update({ includeDepreciation: e.target.checked })}
+          style={{ fontSize: "14px", fontWeight: 500, color: "#666666" }}
+        >
+          Inclure la dépréciation (dégressive selon l'âge)
+        </Checkbox>
+        <Checkbox
+          checked={formData.youngRider}
+          onChange={(e) => update({ youngRider: e.target.checked })}
+          style={{ fontSize: "14px", fontWeight: 500, color: "#666666" }}
+        >
+          Jeune conducteur (+{YOUNG_RIDER_SURCHARGE} € d'assurance par an)
+        </Checkbox>
+      </Space>
+    </Space>
+  );
+
+  const parkingSection = (
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Text>Profil ville</Text>
+            <Select
+              size="large"
+              value={formData.city}
+              onChange={(city) =>
+                update(city === "paris" ? { city, region: "IDF" } : { city })
+              }
+              options={[
+                { value: "none", label: "Aucun" },
+                { value: "paris", label: "Paris (résident, voirie)" },
+              ]}
+              style={{ width: "100%" }}
+            />
+          </Space>
+        </Col>
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Coût stationnement mensuel"
+            value={formData.parkingCost}
+            onChange={field("parkingCost")}
+            suffix="€"
+          />
+        </Col>
+      </Row>
+    </Space>
+  );
+
+  const registrationSection = (
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Text>Région</Text>
+            <Select
+              size="large"
+              showSearch
+              optionFilterProp="label"
+              value={formData.region}
+              onChange={(region) => update({ region })}
+              options={REGIONS.map((region) => ({
+                value: region.code,
+                label: region.name,
+              }))}
+              style={{ width: "100%" }}
+            />
+          </Space>
+        </Col>
+        <Col xs={24} sm={12}>
+          <NumberField
+            label="Puissance fiscale (case P.6)"
+            value={formData.fiscalHp}
+            onChange={field("fiscalHp")}
+            suffix="CV"
+          />
+        </Col>
+      </Row>
+
+      <Checkbox
+        checked={formData.firstBike}
+        onChange={(e) => update({ firstBike: e.target.checked })}
+        style={{ fontSize: "14px", fontWeight: 500, color: "#666666" }}
+      >
+        Premier deux-roues (permis et équipement à prévoir)
+      </Checkbox>
+
+      {formData.firstBike && (
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12}>
+            <NumberField
+              label="Équipement (casque, gants, blouson…)"
+              value={formData.gearCost}
+              onChange={field("gearCost")}
+              suffix="€"
+            />
+          </Col>
+          <Col xs={24} sm={12}>
+            <NumberField
+              label="Permis ou formation"
+              value={formData.licenceCost}
+              onChange={field("licenceCost")}
+              suffix="€"
+            />
+          </Col>
+          <Col xs={24}>
+            <Text type="secondary" style={{ fontSize: "0.85rem" }}>
+              Montants indicatifs, à remplacer par vos devis.
+            </Text>
+          </Col>
+        </Row>
+      )}
+    </Space>
+  );
+
+  const alternativesSection = (
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <NumberField
+        label="Abonnement transports en commun (mensuel)"
+        value={formData.transitPass}
+        onChange={field("transitPass")}
+        suffix="€"
+        step={0.1}
+      />
+    </Space>
+  );
 
   return (
     <Card
-      style={{
-        height: "fit-content",
-        boxShadow:
-          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-        border: "1px solid #f1f5f9",
-      }}
+      className="tco-card reveal"
+      style={
+        { "--delay": "80ms", height: "fit-content" } as React.CSSProperties
+      }
     >
-      <Space
-        direction="vertical"
-        size="large"
-        style={{
-          width: "100%",
-          padding: window.innerWidth < 768 ? "16px" : "32px",
-        }}
-      >
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         <Space align="center" style={{ flexWrap: "wrap" }}>
           <CarOutlined style={{ color: "#2196f3", fontSize: 28 }} />
           <Title
@@ -167,257 +472,30 @@ const TcoForm: React.FC<TcoFormProps> = ({ onCalculate }) => {
           </Title>
         </Space>
 
-        <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          {/* Category Selection */}
-          <Space direction="vertical" size="small" style={{ width: "100%" }}>
-            <Text style={{ fontWeight: 500, color: "#666666" }}>
-              Catégorie de moto
-            </Text>
-            <Space wrap style={{ width: "100%" }}>
-              <Tag.CheckableTag
-                checked={formData.category === "small"}
-                onChange={() => handleCategoryChange("small")}
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  borderRadius: 6,
-                  minWidth: "fit-content",
-                  textAlign: "center",
-                  display: "inline-block",
-                }}
-              >
-                Petite (≤125cc)
-              </Tag.CheckableTag>
-              <Tag.CheckableTag
-                checked={formData.category === "medium"}
-                onChange={() => handleCategoryChange("medium")}
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  borderRadius: 6,
-                  minWidth: "fit-content",
-                  textAlign: "center",
-                  display: "inline-block",
-                }}
-              >
-                Moyenne (126-599cc)
-              </Tag.CheckableTag>
-              <Tag.CheckableTag
-                checked={formData.category === "large"}
-                onChange={() => handleCategoryChange("large")}
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  borderRadius: 6,
-                  minWidth: "fit-content",
-                  textAlign: "center",
-                  display: "inline-block",
-                }}
-              >
-                Grosse (≥600cc)
-              </Tag.CheckableTag>
-            </Space>
-          </Space>
-
-          {/* Form Fields */}
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Prix d'achat</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.purchasePrice}
-                  onChange={handleChange("purchasePrice")}
-                  suffix="€"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Kilométrage annuel</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.annualKm}
-                  onChange={handleChange("annualKm")}
-                  suffix="km"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Coût assurance annuel</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.insuranceCost}
-                  onChange={handleChange("insuranceCost")}
-                  suffix="€"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Coût entretien annuel</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.maintenanceCost}
-                  onChange={handleChange("maintenanceCost")}
-                  suffix="€"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Consommation</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  step={0.1}
-                  value={formData.fuelConsumption}
-                  onChange={handleChange("fuelConsumption")}
-                  suffix="L/100km"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Prix du carburant</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  step={0.01}
-                  value={formData.fuelPrice}
-                  onChange={handleChange("fuelPrice")}
-                  suffix="€/L"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Coût pneus par changement</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.tireCost}
-                  onChange={handleChange("tireCost")}
-                  suffix="€"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12}>
-              <Space
-                direction="vertical"
-                size="small"
-                style={{ width: "100%" }}
-              >
-                <Text>Durée de vie pneus</Text>
-                <Input
-                  size="large"
-                  type="number"
-                  value={formData.tireLifespan}
-                  onChange={handleChange("tireLifespan")}
-                  suffix="km"
-                  style={{ borderRadius: 8 }}
-                />
-              </Space>
-            </Col>
-          </Row>
-
-          <Checkbox
-            checked={formData.includeDepreciation}
-            onChange={(e) =>
-              handleCheckboxChange("includeDepreciation")(e.target.checked)
-            }
-            style={{
-              fontSize: "14px",
-              fontWeight: 500,
-              color: "#666666",
-              marginBottom: "16px",
-            }}
-          >
-            Inclure la dépréciation (15% par an)
-          </Checkbox>
-
-          <Space direction="vertical" size="small" style={{ width: "100%" }}>
-            <Text>Coût stationnement mensuel</Text>
-            <Input
-              size="large"
-              type="number"
-              value={formData.parkingCost}
-              onChange={handleChange("parkingCost")}
-              suffix="€"
-              style={{ borderRadius: 8 }}
-            />
-          </Space>
-
-          <Button
-            type="primary"
-            size="large"
-            icon={<CalculatorOutlined />}
-            onClick={calculateTco}
-            style={{
-              marginTop: 16,
-              borderRadius: 8,
-              background: "linear-gradient(135deg, #2196f3 0%, #1976d2 100%)",
-              border: "none",
-              fontWeight: 600,
-              fontSize: "1.1rem",
-              height: "auto",
-              padding: "12px 24px",
-            }}
-            block
-          >
-            Calculer le TCO
-          </Button>
-        </Space>
+        <Collapse
+          ghost
+          className="tco-form-sections"
+          defaultActiveKey={["bike", "usage"]}
+          items={[
+            { key: "bike", label: "Votre moto", children: bikeSection },
+            { key: "usage", label: "Coûts d'usage", children: usageSection },
+            {
+              key: "parking",
+              label: "Stationnement et ville",
+              children: parkingSection,
+            },
+            {
+              key: "registration",
+              label: "Carte grise et première année",
+              children: registrationSection,
+            },
+            {
+              key: "alternatives",
+              label: "Alternatives",
+              children: alternativesSection,
+            },
+          ]}
+        />
       </Space>
     </Card>
   );

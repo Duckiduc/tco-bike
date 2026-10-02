@@ -78,13 +78,21 @@ Voir l'onglet "Sources & Références" dans l'application pour la liste complèt
 ## ⚖️ Méthodologie TCO
 
 ### Composants du calcul :
-1. **Dépréciation** : 15% par an (optionnel)
+1. **Dépréciation** : dégressive selon l'âge (20%, 12%, 10% puis 8% par an), sur 1 à 10 ans de détention (optionnel)
 2. **Assurance** : Au tiers (455€), intermédiaire (648€), tous risques (907€)
 3. **Entretien** : 225€ (petite), 375€ (moyenne), 575€ (grosse cylindrée)
-4. **Carburant** : Prix SP95 moyen France (1,65€/L en 2024)
+4. **Carburant** : Prix SP95-E10 moyen France (2,16€/L en octobre 2026)
 5. **Pneus** : Coût proratisé selon durée de vie et kilométrage
-6. **Contrôle technique** : 35€ tous les 2 ans (17,50€/an)
-7. **Stationnement** : Variable selon zone géographique
+6. **Contrôle technique** : environ 70€ à 5 ans puis tous les 3 ans, selon l'âge de la moto
+7. **Stationnement** : Variable selon zone géographique, profil Paris résident
+8. **Frais d'acquisition** : carte grise par région, équipement et permis, lissés sur la durée
+
+### Autres fonctions :
+- Calcul en direct, coût par mois et par km, lien partageable
+- Préremplissage et comparaison avec un modèle du top 20
+- Essence ou électrique
+- Comparaison avec le barème kilométrique fiscal, la voiture et les transports en commun (coût et CO2)
+- Prix du SP95-E10 du jour (prix-carburants.gouv.fr)
 
 ## 🎯 Utilisation
 

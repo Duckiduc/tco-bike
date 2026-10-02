@@ -1,25 +1,61 @@
-export interface TcoData {
-  category: "small" | "medium" | "large";
+export type Category = "small" | "medium" | "large";
+export type Energy = "petrol" | "electric";
+export type CityProfile = "none" | "paris";
+
+export interface TcoFormData {
+  model: string;
+  category: Category;
+  energy: Energy;
   purchasePrice: number;
+  bikeAge: number;
+  years: number;
   annualKm: number;
   insuranceCost: number;
+  youngRider: boolean;
   maintenanceCost: number;
   fuelConsumption: number;
   fuelPrice: number;
+  elecConsumption: number;
+  elecPrice: number;
   tireCost: number;
   tireLifespan: number;
   parkingCost: number;
+  city: CityProfile;
+  region: string;
+  fiscalHp: number;
+  firstBike: boolean;
+  gearCost: number;
+  licenceCost: number;
+  transitPass: number;
   includeDepreciation: boolean;
+}
+
+export interface TcoBreakdown {
+  depreciation: number;
+  insurance: number;
+  maintenance: number;
+  fuel: number;
+  tires: number;
+  technical: number;
+  parking: number;
+  acquisition: number;
+}
+
+export interface TcoData extends TcoFormData {
+  // Annual average over the holding period
   totalCost: number;
-  breakdown: {
-    depreciation: number;
-    insurance: number;
-    maintenance: number;
-    fuel: number;
-    tires: number;
-    technical: number;
-    parking: number;
+  totalOverPeriod: number;
+  costPerKm: number;
+  resaleValue: number;
+  breakdown: TcoBreakdown;
+  firstYear: {
+    registration: number;
+    gear: number;
+    licence: number;
+    critAir: number;
+    total: number;
   };
+  timeline: Array<{ year: number; cumulative: number; resale: number }>;
 }
 
 export interface BikeData {
@@ -69,16 +105,7 @@ export interface ComparisonData {
   Total: number;
 }
 
-export interface TcoFormData {
-  category: "small" | "medium" | "large";
-  purchasePrice: number;
-  annualKm: number;
-  insuranceCost: number;
-  maintenanceCost: number;
-  fuelConsumption: number;
-  fuelPrice: number;
-  tireCost: number;
-  tireLifespan: number;
-  parkingCost: number;
-  includeDepreciation: boolean;
+export interface LiveFuelPrice {
+  price: number;
+  date: string;
 }

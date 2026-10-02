@@ -32,6 +32,103 @@ import type { BikeData, BrandData } from "../types";
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
 
+const officialSources = [
+  {
+    label: "prix-carburants.gouv.fr - Prix des carburants en France (données ouvertes)",
+    href: "https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/",
+    detail:
+      "Moyenne des stations au 2 octobre 2026 : SP95-E10 2,16 €/L, SP95 2,22 €/L, SP98 2,27 €/L.",
+  },
+  {
+    label: "Ministère de la Transition écologique - Prix des produits pétroliers",
+    href: "https://www.ecologie.gouv.fr/politiques-publiques/prix-produits-petroliers",
+    detail:
+      "Relevé hebdomadaire des prix moyens à la pompe, publié chaque lundi, avec historique depuis 2020.",
+  },
+  {
+    label: "Service-Public.fr - Contrôle technique : obligatoire ou dispense ?",
+    href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F2880",
+    detail:
+      "Catégorie L soumise au contrôle technique depuis le 15 avril 2024 (fiche vérifiée le 23 janvier 2026).",
+  },
+  {
+    label: "Ministère de la Transition écologique - Contrôle technique des véhicules",
+    href: "https://www.ecologie.gouv.fr/politiques-publiques/controle-technique-vehicules",
+    detail:
+      "Premier contrôle au plus tard 5 ans après la première immatriculation, puis tous les 3 ans ; contre-visite sous 2 mois ; contrôle de moins de 6 mois pour une revente.",
+  },
+  {
+    label: "Légifrance - Arrêté du 23 octobre 2023 (contrôle technique des 2-3 roues et quadricycles)",
+    href: "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000048242538",
+    detail: "Texte réglementaire de référence du contrôle technique de la catégorie L.",
+  },
+  {
+    label: "Service-Public.fr - Coût de la carte grise",
+    href: "https://www.service-public.gouv.fr/particuliers/vosdroits/F19211",
+    detail:
+      "Taxe régionale + taxe fixe de 11 € + redevance d'acheminement de 2,76 € (fiche vérifiée le 8 septembre 2026), avec simulateur officiel.",
+  },
+  {
+    label: "BOFiP - Taxe régionale sur les certificats d'immatriculation",
+    href: "https://bofip.impots.gouv.fr/bofip/13925-PGP.html/identifiant=BOI-AIS-MOB-10-20-30-20240710",
+    detail:
+      "Tarif régional réduit de moitié pour les motocyclettes (§180), exonération des cyclomoteurs (§170).",
+  },
+  {
+    label: "economie.gouv.fr - Barème des frais kilométriques",
+    href: "https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/impot-sur-le-revenu-tout-savoir-sur-le-bareme-des-frais-kilometriques",
+    detail:
+      "Barème motos inchangé en 2026 : au-delà de 6 000 km, 0,248 €/km (1-2 CV), 0,275 €/km (3-5 CV), 0,343 €/km (plus de 5 CV).",
+  },
+  {
+    label: "France Assureurs - Le marché de l'assurance automobile des particuliers en 2025",
+    href: "https://www.franceassureurs.fr/nos-chiffres-cles/assurance-de-dommages-et-responsabilite/marche-assurance-automobile-particuliers-2025/",
+    detail:
+      "Prime moyenne d'un deux-roues : 290 € hors taxes (+4,6 %), parc de 5 millions de véhicules (publié le 20 juillet 2026).",
+  },
+  {
+    label: "Ville de Paris - Stationnement résidentiel",
+    href: "https://www.paris.fr/pages/stationnement-residentiel-mode-d-emploi-2078",
+    detail:
+      "Deux-roues motorisés : carte résident 22,50 € par an ou 45 € pour 3 ans, puis 0,75 € par jour ou 4,50 € par semaine (page mise à jour le 28 septembre 2026).",
+  },
+  {
+    label: "ADEME - Impact CO2, moto thermique",
+    href: "https://impactco2.fr/outils/transport/moto",
+    detail:
+      "Par km, fabrication comprise : moto de plus de 250 cm³ 215 g CO2e, moto jusqu'à 250 cm³ 87 g, scooter électrique 59 g, voiture thermique 142 g, métro 4 g (Base Empreinte).",
+  },
+  {
+    label: "Île-de-France Mobilités - Tarifs 2026",
+    href: "https://www.iledefrance-mobilites.fr/en/tarifs-titre-de-transport-en-commun-2026",
+    detail:
+      "Forfait Navigo mois toutes zones : 90,80 € depuis le 1er janvier 2026 (998,80 € en annuel).",
+  },
+  {
+    label: "Ville de Paris - Stationnement des deux-roues motorisés électriques",
+    href: "https://www.paris.fr/pages/les-autres-offres-de-stationnement-2355",
+    detail:
+      "Stationnement gratuit sur voirie pour les deux-roues motorisés électriques.",
+  },
+  {
+    label: "Certificat qualité de l'air (Crit'Air) - site officiel",
+    href: "https://www.certificat-air.gouv.fr/",
+    detail:
+      "Vignette à 3,85 € envoi compris ; classement des deux-roues selon la date de première immatriculation.",
+  },
+  {
+    label: "Sécurité routière - Équipements obligatoires à moto",
+    href: "https://www.securite-routiere.gouv.fr/reglementation-liee-aux-modes-de-deplacements/moto/equipements-obligatoires-moto",
+    detail: "Casque homologué et gants certifiés obligatoires pour le conducteur et le passager.",
+  },
+  {
+    label: "SDES - Immatriculations des véhicules routiers",
+    href: "https://www.statistiques.developpement-durable.gouv.fr/immatriculation-des-vehicules-routiers",
+    detail:
+      "Statistiques publiques des immatriculations neuves et d'occasion, deux-roues motorisés compris.",
+  },
+];
+
 interface DataExplanationProps {
   bikeData: BikeData[];
   brandData: BrandData[];
@@ -252,20 +349,25 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
               )}
               ghost
             >
-              <Panel header="Dépréciation (15% par an)" key="1">
+              <Panel header="Dépréciation (dégressive)" key="1">
                 <Text>
-                  Basée sur une dépréciation moyenne de 15% par an pour les
-                  motos, calculée sur le prix d'achat initial. Cette valeur
-                  correspond aux études de marché européennes sur la
-                  dépréciation des deux-roues motorisés.
+                  La moto perd 20% de sa valeur la première année, 12% la
+                  deuxième, 10% la troisième, puis 8% par an. La courbe part de
+                  l'âge de la moto à l'achat et donne la valeur de revente à la
+                  fin de la durée de détention. Il s'agit d'une estimation : il
+                  n'existe pas de statistique officielle de décote des
+                  deux-roues.
                 </Text>
               </Panel>
               <Panel header="Assurance" key="2">
                 <Text>
-                  Coûts d'assurance moyens en France pour 2024 : au tiers
-                  (455€), intermédiaire (648€), tous risques (907€). Majoration
-                  de 600€ pour les jeunes conducteurs. Sources : comparateurs
-                  d'assurance français.
+                  Devis moyens relevés par les comparateurs français en 2024 :
+                  au tiers (455€), intermédiaire (648€), tous risques (907€).
+                  Majoration de 600€ pour les jeunes conducteurs. À titre de
+                  repère, France Assureurs mesure une prime moyenne réellement
+                  payée de 290€ hors taxes par deux-roues en 2025 (+4,6%), tous
+                  contrats et toutes cylindrées confondus, cyclomoteurs
+                  compris.
                 </Text>
               </Panel>
               <Panel header="Entretien et Maintenance" key="3">
@@ -277,8 +379,10 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
               </Panel>
               <Panel header="Carburant" key="4">
                 <Text>
-                  Calculé avec le prix moyen du SP95 en France (1,65€/L en 2024)
-                  et la consommation spécifique à chaque catégorie de moto selon
+                  Calculé avec le prix moyen du SP95-E10 en France (2,16€/L au 2
+                  octobre 2026, moyenne des stations du jeu de données ouvert
+                  prix-carburants.gouv.fr ; SP95 : 2,22€/L, SP98 : 2,27€/L) et
+                  la consommation spécifique à chaque catégorie de moto selon
                   votre kilométrage annuel.
                 </Text>
               </Panel>
@@ -291,16 +395,58 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
               </Panel>
               <Panel header="Contrôle technique" key="6">
                 <Text>
-                  Obligatoire tous les 2 ans pour les motos de plus de 4 ans
-                  (35€ par contrôle, soit 17,50€ par an). Conforme à la
-                  réglementation française en vigueur.
+                  Obligatoire depuis le 15 avril 2024 pour les véhicules de
+                  catégorie L : premier contrôle dans les 6 mois précédant le
+                  5e anniversaire de la première immatriculation, puis tous les
+                  3 ans. Le tarif est libre (environ 70€ constatés en centre).
+                  Le calcul compte les contrôles qui tombent pendant la durée
+                  de détention, selon l'âge de la moto.
                 </Text>
               </Panel>
               <Panel header="Stationnement" key="7">
                 <Text>
                   Coûts variables selon la zone géographique : gratuit en
-                  province, jusqu'à 100€/mois dans les centres-villes.
-                  Personnalisable selon votre situation.
+                  province, jusqu'à 100€/mois dans les centres-villes. À Paris,
+                  le stationnement sur voirie des deux-roues motorisés
+                  thermiques est payant : carte résident à 22,50€ par an (45€
+                  pour 3 ans), puis 0,75€ par jour ou 4,50€ par semaine.
+                  Le profil « Paris » applique ce tarif (gratuit pour un
+                  deux-roues électrique) et ajoute la vignette Crit'Air à
+                  3,85€. Personnalisable selon votre situation.
+                </Text>
+              </Panel>
+              <Panel header="Carte grise et frais d'acquisition" key="8">
+                <Text>
+                  Carte grise : puissance fiscale × tarif régional du cheval
+                  fiscal, réduit de moitié pour les motocyclettes, plus 11€ de
+                  taxe fixe et 2,76€ d'acheminement. Les tarifs régionaux 2026
+                  proviennent de sites spécialisés : le simulateur de
+                  Service-Public.fr fait foi. Le permis et l'équipement sont
+                  des montants indicatifs à saisir. Ces frais sont lissés sur
+                  la durée de détention.
+                </Text>
+              </Panel>
+              <Panel header="Électrique" key="9">
+                <Text>
+                  L'énergie est calculée avec la consommation en kWh/100 km et
+                  le tarif réglementé de l'électricité (environ 0,20€/kWh en
+                  option base depuis août 2026). Le bonus écologique national
+                  pour les deux-roues électriques a été supprimé en décembre
+                  2024, et la plupart des régions ne les exonèrent plus de taxe
+                  régionale.
+                </Text>
+              </Panel>
+              <Panel header="Frais réels et alternatives" key="10">
+                <Text>
+                  Le barème kilométrique fiscal des motocyclettes (inchangé
+                  depuis 2023, majoré de 20% en électrique) est comparé à vos
+                  coûts hors stationnement. Le coût de la voiture correspond au
+                  barème fiscal d'une 5 CV, celui des transports en commun à
+                  l'abonnement saisi (Navigo toutes zones : 90,80€ par mois en
+                  2026). Les émissions sont celles de l'ADEME, fabrication
+                  comprise : 87 g CO2e/km pour une moto jusqu'à 250 cm³, 215 g
+                  au-delà, 59 g pour un scooter électrique, 142 g pour une
+                  voiture thermique, 4 g pour le métro.
                 </Text>
               </Panel>
             </Collapse>
@@ -314,16 +460,21 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
                   <strong>• Données de ventes :</strong> CSIAM (Chambre
                   Syndicale Internationale de l'Automobile et du Motocycle)
                   <br />
-                  <strong>• Prix carburant :</strong> Ministère de la Transition
-                  Écologique
+                  <strong>• Prix carburant :</strong> prix-carburants.gouv.fr
+                  (données ouvertes du ministère de l'Économie), octobre 2026
                   <br />
-                  <strong>• Assurances :</strong> Moyennes des principaux
-                  assureurs français 2024
+                  <strong>• Assurances :</strong> comparateurs français 2024 et
+                  France Assureurs (marché 2025)
+                  <br />
+                  <strong>• Contrôle technique, carte grise :</strong>{" "}
+                  Service-Public.fr, ministère de la Transition écologique,
+                  BOFiP
                   <br />
                   <strong>• Entretien :</strong> Enquêtes auprès des
                   concessionnaires et garages agréés
                   <br />
-                  <strong>• Dépréciation :</strong> Études Eurotax et Argus Moto
+                  <strong>• Dépréciation :</strong> estimation, faute de
+                  statistique officielle
                 </div>
               }
             />
@@ -368,7 +519,29 @@ const DataExplanation: React.FC<DataExplanationProps> = ({
                 <CaretRightOutlined rotate={isActive ? 90 : 0} />
               )}
               ghost
+              defaultActiveKey={["official"]}
             >
+              <Panel
+                header="🏛️ Sources officielles (vérifiées en octobre 2026)"
+                key="official"
+              >
+                <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
+                  {officialSources.map((source) => (
+                    <div key={source.href} style={{ marginBottom: "0.5rem" }}>
+                      <a
+                        href={source.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {source.label}
+                      </a>
+                      <br />
+                      <Text type="secondary">{source.detail}</Text>
+                    </div>
+                  ))}
+                </div>
+              </Panel>
+
               <Panel header="💰 Coûts & Budget (Sources 1-25)" key="costs">
                 <div style={{ lineHeight: 1.8, fontSize: "0.9rem" }}>
                   <a
