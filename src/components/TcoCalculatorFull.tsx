@@ -24,6 +24,40 @@ const FUEL_PRICE_API =
 
 const { Title, Text } = Typography;
 
+const InfoCard: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  items: Array<{ label: string; value: string }>;
+}> = ({ icon, title, items }) => (
+  <Card className="tco-card hover-lift" style={{ height: "100%" }}>
+    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <Space align="center">
+        {icon}
+        <Title level={4} style={{ margin: 0, fontWeight: 600 }}>
+          {title}
+        </Title>
+      </Space>
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text>{item.label}</Text>
+            <Text strong style={{ color: "#2196f3" }}>
+              {item.value}
+            </Text>
+          </div>
+        ))}
+      </Space>
+    </Space>
+  </Card>
+);
+
 const TcoCalculator: React.FC = () => {
   const [formData, setFormData] = useState<TcoFormData>(() =>
     fromQuery(window.location.search),
@@ -109,39 +143,6 @@ const TcoCalculator: React.FC = () => {
     }
   };
 
-  const InfoCard: React.FC<{
-    icon: React.ReactNode;
-    title: string;
-    items: Array<{ label: string; value: string }>;
-  }> = ({ icon, title, items }) => (
-    <Card className="tco-card hover-lift" style={{ height: "100%" }}>
-      <Space direction="vertical" size="large" style={{ width: "100%" }}>
-        <Space align="center">
-          {icon}
-          <Title level={4} style={{ margin: 0, fontWeight: 600 }}>
-            {title}
-          </Title>
-        </Space>
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text>{item.label}</Text>
-              <Text strong style={{ color: "#2196f3" }}>
-                {item.value}
-              </Text>
-            </div>
-          ))}
-        </Space>
-      </Space>
-    </Card>
-  );
 
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
